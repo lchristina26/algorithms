@@ -1,7 +1,7 @@
 /* Simple Fast Fourier Transforms Program 
    Spring 2015 Algorithms as described in "Introduction to Algorithms" by 
    Cormen, Leiserson, Rivest, and Stein 
-   
+   to compile enter: 'gcc -o fft fft.c -lm'   
    by Monica Thornton and Leah Thompson */
 
 #include <math.h>
@@ -14,8 +14,13 @@ int* recursive_FFT(int* a);
 
 int main () 
 {
+    int i = 0;
     int polyA[] = {1, 2, 3};
-    recursive_FFT(polyA);
+    int* polyB;
+    polyB = recursive_FFT(polyA);
+    
+    for (i = 0; i < 3; i++)
+        printf("polyB[i]\n");
 
     return 0;
 }
@@ -35,11 +40,11 @@ int* recursive_FFT(int* a)
         return a;
     for (i = 0; i < n; i++) {
         if (i % 2) {
-            printf("%d, %d", i, i % 2);
+            //printf("%d, %d", i, i % 2);
             a0[i] = a[i];
         }
         else {
-            printf("%d, %d", i, i % 2);
+            //printf("%d, %d", i, i % 2);
             a1[i] = a[i];
         }
     }
