@@ -14,19 +14,21 @@ int* recursive_FFT(int* a);
 
 int main () 
 {
-    int polyA[3] = {1, 2, 3};
-    recusrive_FFT(polyA, 3);
+    int polyA[] = {1, 2, 3};
+    recursive_FFT(polyA);
 
     return 0;
 }
 
-int* recursive_FFT(int* a, int n)
+int* recursive_FFT(int* a)
 {
     int i = 0, k = 0;
+    int n = sizeof(a);
     double w, wn;
-    static int a0[(int)n/2 - 1], a1[(int)n/2 - 1], y[n], y0[(int)n/2 - 1], 
-               y1[(int)n/2 - 1];
-
+    static int y[sizeof(a)/2];
+    static int a0[sizeof(a)/2], a1[sizeof(a)/2];
+    int* y0;
+    int* y1; // y0[sizeof(a)/2], y1[sizeof(a)/2];
     wn = pow(2.718, ((2*M_PI)/n));
 
     if (n == 1)
@@ -49,7 +51,6 @@ int* recursive_FFT(int* a, int n)
         y[k + n/2] = y0[k] - (w * y1[k]);
         w = w * wn;    
     }
-
     return y;
 }
 
