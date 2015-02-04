@@ -14,7 +14,7 @@
 int *poly(int *ab, int x, int n);
 int *poly_c(int *a, int *b, int x, int n);
 int revBit(int num);
-int reverseBits(int* a, int n, int* A);
+void reverseBits(int* a, int n, int* A);
 int *i_fft(int *a, int x, int n);
 
 int main () 
@@ -44,12 +44,7 @@ int main ()
         polyA[i] = rand() % 100;
         printf("%d %d\n",i, polyA[i]);
     }
-
-    //polyB = recursive_FFT(polyA, n);
-    /*    for (i = 0; i < n; i++) {
-          sum = sum + polyB[i];
-          } 
-          printf("%d\n", sum); */
+    
     return 0;
 }
 
@@ -65,7 +60,7 @@ int *i_fft(int* a, int x, int n)
         wm = exp((2 * M_PI * s) / m);
     }
     for (j = 0; j < n - 1; j++) {
-        
+
         for (k = j; k < n - 1; k++) {
             t = w*bigA[k+m/2];
             u = bigA[k];
@@ -77,25 +72,25 @@ int *i_fft(int* a, int x, int n)
     return bigA;
 }
 
-int reverseBits(int *a,int n, int *A)
+void reverseBits(int *a,int n, int *A)
 {
     int k;
     for (k = 0; k < n; k++) {
         A[revBit(k)] = a[k];
+        printf("Reversed # = %d\n", revBit(k));
     }
 }
+
 int revBit(int num)
 {
-    int  NO_OF_BITS = sizeof(num) * 8;
-    int reverse_num = 0, i, temp;
-
+    int  NO_OF_BITS = sizeof(int);
+    int reverse_num = 0;
+    int i;
     for (i = 0; i < NO_OF_BITS; i++)
     {
-        temp = (num & (1 << i));
-        if(temp)
-            reverse_num |= (1 << ((NO_OF_BITS - 1) - i));
+        if((num & (1 << i)))
+            reverse_num |= 1 << ((NO_OF_BITS - 1) - i); 
     }
-
     return reverse_num;
 }
 
