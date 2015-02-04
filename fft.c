@@ -11,7 +11,6 @@
 
 #define M_PI 3.14159265358979323846
 
-//int* recursive_FFT(int* a, int n);
 int *poly(int *ab, int x, int n);
 int *poly_c(int *a, int *b, int x, int n);
 int revBit(int num);
@@ -20,7 +19,6 @@ int *i_fft(int *a, int x, int n);
 
 int main () 
 {
-    /* for fft */
     int x = 5, n = 6, i = 0, sum = 0;
     int polyA[] = {1, 2, 3, 4, 5, 6};// = (int *)malloc(sizeof(int));
     int *a = (int *)malloc(sizeof(int));
@@ -55,44 +53,6 @@ int main ()
     return 0;
 }
 
-/*int* i_FFT(int* a, int x, int n)
-{
-    int i = 0, k = 0;
-    int size = n/2;
-    double w, wn;
-    int* y = (int *)malloc(sizeof(int));
-    int* a0, *a1;
-    int* y0;
-    int* y1; 
-    double q = round(log(n)/log(2));
-    y0 = (int *)malloc(sizeof(int));
-    y1 = (int *)malloc(sizeof(int));
-    a0 = (int *)malloc(sizeof(int));
-    a1 = (int *)malloc(sizeof(int));
-    wn = pow(2.718, ((2*M_PI)/n));
-    
-    /*    int a0[size], a1[size], y[size], y0[size], y1[size];*/
-   /* if (n == 1)
-        return a;
-
-    for (i = 0; i < n; i++) {
-        if (i % 2) {
-            a0[i] = a[i];
-        }
-        else {
-            a1[i] = a[i];
-        }
-    }
-    y0 = recursive_FFT(a0, size);
-    y1 = recursive_FFT(a1, size);
-
-    for (k = 0; k <= n/2; k++) {
-        y[k] = y0[k] + (w * y1[k]);
-        y[k + n/2] = y0[k] - (w * y1[k]);
-        w = w * wn;    
-    }
-    return y;
-}*/
 int *i_fft(int* a, int x, int n)
 {
     int s, k, j, t, m, u;
@@ -117,24 +77,6 @@ int *i_fft(int* a, int x, int n)
     return bigA;
 }
 
-int *poly (int *ab, int x, int n)
-{
-    int j;
-    int *p = (int *)malloc(sizeof(int));
-    for (j = 0; j < n -1; j++)
-        p[j] = ab[j] * pow(x, j);
-    return p;
-}
-
-int *poly_c (int *a, int*b, int x, int n)
-{
-    int j;
-    int *pC = (int *)malloc(sizeof(int));
-    for (j = 0; j < n -1; j++)
-        pC[j] = (a[j] + b[j]) * pow(x, j);
-    return pC;
-}
-
 int reverseBits(int *a,int n, int *A)
 {
     int k;
@@ -156,3 +98,22 @@ int revBit(int num)
 
     return reverse_num;
 }
+
+int *poly (int *ab, int x, int n)
+{
+    int j;
+    int *p = (int *)malloc(sizeof(int));
+    for (j = 0; j < n -1; j++)
+        p[j] = ab[j] * pow(x, j);
+    return p;
+}
+
+int *poly_c (int *a, int*b, int x, int n)
+{
+    int j;
+    int *pC = (int *)malloc(sizeof(int));
+    for (j = 0; j < n -1; j++)
+        pC[j] = (a[j] + b[j]) * pow(x, j);
+    return pC;
+}
+
