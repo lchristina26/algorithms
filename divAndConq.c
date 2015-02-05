@@ -13,11 +13,8 @@
  
 // A[] & B[] hold coefficients of first polynomial (from smallest (degree 0) to largest (degree m or n-1)
 // m and n are sizes of A[] and B[]
-//int multiply(int A[], int B[], int m)
 int *multiply(int A[], int B[], int m)
 {
-    //int prod;
-    //int temp;
    int *prod = (int *)malloc(2* m - 1);  
    int *temp = (int *)malloc(2* m - 1);  
 
@@ -28,9 +25,7 @@ int *multiply(int A[], int B[], int m)
 	
    if (m==1) {
 	temp[0] = (A[0] * B[0]);
-	//temp = (A[0] * B[0]);
-        //return temp;
-        return (int *)temp; 
+        return temp; 
    }
    
    int h = m/2;
@@ -55,27 +50,18 @@ int *multiply(int A[], int B[], int m)
        addLowHighB[j] = BLow[j]+BHigh[j];	     
    } 
 
-  d int lowerPart[sizeof(h)];
-   int middlePart[sizeof(h)]; 	   
-   int upperPart[sizeof(h)]; 
-   
-   int p;
-   for(p = 0; p<(h); p++) {
-  	lowerPart[p] = *multiply(ALow, BLow, h);		
-  	middlePart[p] = *multiply(addLowHighA, addLowHighB, h);
-  	upperPart[p] = *multiply(AHigh, BHigh, h);
-  }
-   //int prod[sizeof(2 * m - 1)];
+  
+       int *lowerPart = multiply(ALow, BLow, h);	 		
+       int *middlePart = multiply(addLowHighA, addLowHighB, h);
+       int *upperPart = multiply(AHigh, BHigh, h);
+
    for(k = 0; k < m-1; k++) {
       prod[k] += lowerPart[k];
       prod[k+h] += middlePart[k] - lowerPart[k] - upperPart[k];
       prod[k+2*h] += upperPart[k];
    }	
     
-//    *prod = C[0];
-
-  return (int*)prod;
-  //    return C[0]; 
+    return prod;	
 }
  
 // A utility function to print a polynomial
@@ -99,8 +85,8 @@ int main()
  
     begin = clock(); 	
     // Array holding coefficients corresponding to degrees in ascending order (i.e. {5, 0, 10, 6} = 5 + 10x^2 + 6x^3
-    int A[] = {5, 0, 10, 6};
-    int B[] = {1, 2, 4, 0};
+    int A[] = {5, 0, 10, 6, 2, 3, 8, 9};
+    int B[] = {1, 2, 4, 0, 1, 0, 0, 10};
 
     int m = sizeof(A)/sizeof(A[0]);
     int n = sizeof(B)/sizeof(B[0]);
@@ -118,7 +104,7 @@ int main()
     end = clock();
     timeElapsed = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    printf("\nProduct polynomial is \n");
+    printf("\nDivide and Conquer Product polynomial is \n");
     printPoly(prod, m+n-1);
     printf("\n");
     
