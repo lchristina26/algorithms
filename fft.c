@@ -11,104 +11,64 @@
 
 #define M_PI 3.14159265358979323846
 
-int *poly(int *ab, int x, int n);
-int *poly_c(int *a, int *b, int x, int n);
-int revBit(int num);
-void reverseBits(int* a, int n, int* A);
-int *i_fft(int *a, int x, int n);
+double* recursive_FFT(double* a, int n);
 
 int main () 
 {
-    int x = 5, n = 6, i = 0, sum = 0;
-    int polyA[] = {1, 2, 3, 4, 5, 6};// = (int *)malloc(sizeof(int));
-    int *a = (int *)malloc(sizeof(int));
-    int *b = (int *)malloc(sizeof(int));
-    int *A = (int *)malloc(sizeof(int));
-    int *B = (int *)malloc(sizeof(int));
-    int *C = (int *)malloc(sizeof(int));
-    int* polyB;
-
-    for(i = 0; i < n; i++) {
-        a[i] = rand() % 100;
-        b[i] = rand() % 100;
-    }
-    A = poly(b, x, n);
-    B = poly(a, x, n);
-    C = poly_c(A, B, x, n);
-    for(i = 0; i < n; i++) {
-        printf("%d\n", C[i]);
-        sum = sum + C[i];
-    }
-    printf("Sum of Poly Mult = %d\n", sum);
-    for (i = 0; i < n; i++) {
-        polyA[i] = rand() % 100;
-        printf("%d %d\n",i, polyA[i]);
-    }
+    /* for fft */
+    int x = 5, n = 5, i = 0, sum = 0;
+    //double *a = (double *)malloc(2*n*sizeof(double));
+    double* polyB = (double *)malloc(2*n*sizeof(double));
+    double a[] = {4, 3, 3, 5, 7};
+    /*for(i = 0; i < n; i++) {
+        a[i] = ((rand() % 1) + 1);
+        printf("Poly A at %d = %f\n", i, a[i]);
+    }*/
     
+    polyB = recursive_FFT(a, n);
+    for (i = 0; i < n; i++) {
+        printf("FFT Coefficient %d = %lf\n", i, polyB[i]); 
+    } 
     return 0;
 }
 
-int *i_fft(int* a, int x, int n)
+double* recursive_FFT(double* a, int n)
 {
-    int s, k, j, t, m, u;
-    double wm;
-    int w = 1;
-    int *bigA = (int *)malloc(sizeof(int));
-    reverseBits(a, n, bigA);
-    for (s = 1; s <= (log(n)/log(2)); s++) {
-        m = pow(2, s);
-        wm = exp((2 * M_PI * s) / m);
-    }
-    for (j = 0; j < n - 1; j++) {
+    int i = 0, k = 0;
+    int size = n/2;
+    double w, wn;
+    double* y = (double *)malloc(2*n*sizeof(double));
+    double* a0, *a1;
+    double* y0;
+    double* y1; 
+    y0 = (double *)malloc((n*2)*sizeof(double));
+    y1 = (double *)malloc((n*2)*sizeof(double));
+    a0 = (double *)malloc((n*2)*sizeof(double));
+    a1 = (double *)malloc((n*2)*sizeof(double));
+    /*    int a0[size], a1[size], y[size], y0[size], y1[size];*/
+    if (n == 1)
+        return a;
 
-        for (k = j; k < n - 1; k++) {
-            t = w*bigA[k+m/2];
-            u = bigA[k];
-            bigA[k] = u + t;
-            bigA[k+m/2] = u - t;
+    for (i = 0; i < n; i++) {
+        if (!(i % 2)) {
+            a0[i] = a[i];
+        }
+        else {
+            a1[i] = a[i];
         }
     }
-    w = w * wm;
-    return bigA;
-}
-
-void reverseBits(int *a,int n, int *A)
-{
-    int k;
-    for (k = 0; k < n; k++) {
-        A[revBit(k)] = a[k];
-        printf("Reversed # = %d\n", revBit(k));
+    y0 = recursive_FFT(a0, size);
+    y1 = recursive_FFT(a1, size);
+    w = 1;
+    wn = exp(((2*M_PI))/n);
+    for (k = 0; k <= n/2; k++) {
+        printf("Wn = %f, W = %f\n", wn, w);
+        y[k] = y0[k] + (w * y1[k]);
+        printf("Real Val: %lf\n", y[k]);
+        y[k + n/2] = y0[k] - (w * y1[k]);
+        printf("Imagn Val: %lf\n", y[k + n/2]);
+        w = w * wn;    
     }
-}
-
-int revBit(int num)
-{
-    int  NO_OF_BITS = sizeof(int);
-    int reverse_num = 0;
-    int i;
-    for (i = 0; i < NO_OF_BITS; i++)
-    {
-        if((num & (1 << i)))
-            reverse_num |= 1 << ((NO_OF_BITS - 1) - i); 
-    }
-    return reverse_num;
-}
-
-int *poly (int *ab, int x, int n)
-{
-    int j;
-    int *p = (int *)malloc(sizeof(int));
-    for (j = 0; j < n -1; j++)
-        p[j] = ab[j] * pow(x, j);
-    return p;
-}
-
-int *poly_c (int *a, int*b, int x, int n)
-{
-    int j;
-    int *pC = (int *)malloc(sizeof(int));
-    for (j = 0; j < n -1; j++)
-        pC[j] = (a[j] + b[j]) * pow(x, j);
-    return pC;
+    return y;
 }
 
