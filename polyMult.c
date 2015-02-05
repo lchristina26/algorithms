@@ -60,24 +60,32 @@ int main()
  
     begin = clock(); 	
     // Array holding coefficients corresponding to degrees in ascending order (i.e. {5, 0, 10, 6} = 5 + 10x^2 + 6x^3
-    int A[] = {5, 0, 10, 6, 2, 3, 8, 9};
-    int B[] = {1, 2, 4, 0, 1, 0, 0, 10};
+    int size = 8192;
+    
+    int A[size];
+    int B[size];
 
 
     int m = sizeof(A)/sizeof(A[0]);
     int n = sizeof(B)/sizeof(B[0]);
- 
-    //printf("First polynomial is \n");
-    //printPoly(A, m);
-    //printf("\nSecond polynomial is \n");
-    //printPoly(B, n);
+    
+    int i = 0;
+    int j = 0;
+
+    for (i=0; i < size; i++) {
+        A[i] = rand() % 11;
+    }
+
+    for (j=0; j < size; j++) {
+        B[j] = rand() % 11;
+    }
  
     int *prod = multiply(A, B, m, n);
  
     end = clock();
     timeElapsed = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    printf("\nPoly Mult Product polynomial is \n");
+    printf("\nPoly Mult Product (for size %d polynomial is \n", size);
     printPoly(prod, m+n-1);
     printf("\n");
     
