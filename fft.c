@@ -11,7 +11,8 @@
 
 #define M_PI 3.14159265358979323846
 
-double* recursive_FFT(double* a, int n, double w);
+double* recursive_FFT(double* a, int n);
+double* i_FFT(double *a, int n);
 
 int main () 
 {
@@ -20,20 +21,22 @@ int main ()
     //double *a = (double *)malloc(2*n*sizeof(double));
     double* polyB = (double *)malloc(2*n*sizeof(double));
     double* polyA = (double *)malloc(2*n*sizeof(double));
-    double a[] = {5, 0, 10, 6, 0, 0, 0, 0};
+    double* polyC = (double *)malloc(2*n*sizeof(double));
+    double a[] = {6, 2, 10, 6, 0, 0, 0, 0};
     double b[] = {1, 2, 4, 6, 0, 0, 0, 0};
     double c[8];
+    double d[8];
     double w = exp(2 * M_PI/n);//cos(2*M_PI/n) + sin(2*M_PI/n);
     /*for(i = 0; i < n; i++) {
         a[i] = ((rand() % 1) + 1);
         printf("Poly A at %d = %f\n", i, a[i]);
     }*/
     
-    polyA = recursive_FFT(b, n, w);
+    polyA = recursive_FFT(a, n);
     for (i = 0; i < n; i++) {
         printf("FFT Coefficient A %d = %lf\n", i, polyA[i]); 
     }
-    polyB = recursive_FFT(b, n, w);
+    polyB = recursive_FFT(b, n);
     for (i = 0; i < n; i++) {
         printf("FFT Coefficient B %d = %lf\n", i, polyB[i]); 
     }
@@ -41,19 +44,19 @@ int main ()
         c[i] = polyA[i] * polyB[i];
         printf("Point val of C = %d\n", (int)c[i]);
     }
-    polyB = recursive_FFT(c, n, pow(w, -1));
+    polyC = i_FFT(c, n);
     for (i = 0; i < n; i++) {
-        c[i] = (1/n) * polyB[i];
-        printf("Coefficient form of C = %d\n", (int)c[i]);
+        d[i] = polyC[i];
+        printf("Coefficient form of C = %d\n", (int)d[i]);
     }
     return 0;
 }
 
-double* recursive_FFT(double* a, int n, double wn)
+double* recursive_FFT(double* a, int n)
 {
     int i = 0, k = 0;
     int size = n/2;
-    double w, wnew = wn;
+    double w, wn;
     double* y = (double *)malloc(2*n*sizeof(double));
     double* a0, *a1;
     double* y0;
@@ -74,10 +77,10 @@ double* recursive_FFT(double* a, int n, double wn)
             a1[i] = a[i];
         }
     }
-    y0 = recursive_FFT(a0, size, pow(wnew, 2));
-    y1 = recursive_FFT(a1, size, pow(wnew, 2));
+    y0 = recursive_FFT(a0, size);
+    y1 = recursive_FFT(a1, size);
     w = 1;
-    //wn = exp(((2*M_PI))/n);
+    wn = exp(((2*M_PI))/n);
     for (k = 0; k <= n/2; k++) {
         //printf("Wn = %f, W = %f\n", wn, w);
         y[k] = y0[k] + (w * y1[k]);
@@ -89,3 +92,42 @@ double* recursive_FFT(double* a, int n, double wn)
     return y;
 }
 
+double* i_FFT(double* a, int n)
+{
+    int i = 0, k = 0;
+    int size = n/2;
+    double w, wn;
+    double* y = (double *)malloc(2*n*sizeof(double));
+    double* a0, *a1;
+    double* y0;
+    double* y1; 
+    y0 = (double *)malloc((n*2)*sizeof(double));
+    y1 = (double *)malloc((n*2)*sizeof(double));
+    a0 = (double *)malloc((n*2)*sizeof(double));
+    a1 = (double *)malloc((n*2)*sizeof(double));
+    /*    int a0[size], a1[size], y[size], y0[size], y1[size];*/
+    if (n == 1)
+        return a;
+
+    for (i = 0; i < n; i++) {
+        if (!(i % 2)) {
+            a0[i] = a[i];
+        }
+        else {
+            a1[i] = a[i];
+        }
+    }
+    y1 = i_FFT(a0, size);
+    y0 = i_FFT(a1, size);
+    w = 1;
+    wn = exp(((2*M_PI))/n);
+    for (k = 0; k <= n/2; k++) {
+        //printf("Wn = %f, W = %f\n", wn, w);
+        y[k] = (y0[k] + (w * y1[k]))/n;
+        //printf("Real Val: %lf\n", y[k]);
+        y[k + n/2] = (y0[k] - (w * y1[k]))/n;
+        //printf("Imagn Val: %lf\n", y[k + n/2]);
+        w = w * wn;    
+    }
+    return y;
+}
