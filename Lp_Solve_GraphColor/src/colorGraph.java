@@ -107,8 +107,13 @@ public class colorGraph {
             } 
         }
         // Need to load sparce matrix into lp here//
-
-
+        for (int i = 0; i < num_V; i++) {
+        	for (int k = 0; k < k_Colors; k++){
+            	lp.setMat(i,k,cfs.get(i));		//add the binary digits for color(0 for no color)
+        	}
+        	
+        }
+        
         //Print results
         lp.getVariables(row);
         for (int i = 0; i < k_Colors; i++) {
